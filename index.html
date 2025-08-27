@@ -1,62 +1,272 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高级个人主页</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>实用工具导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        /* 网页内容初始隐藏，同意后显示 */
+        .page-content {
+            display: none;
+            background-color: #f5f5f5;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        /* 标题：改为纯黑色 */
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: #000;
+            font-weight: bold;
+        }
+        /* 动态彩色动画（共用） */
+        @keyframes colorMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .link-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .link-item {
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #fafafa;
+            transition: background-color 0.3s;
+        }
+        .link-item:hover {
+            background-color: #f0f0f0;
+        }
+        .link-item a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1.1rem;
+            display: block;
+        }
+        /* 动态彩色样式（共用：小y社区 + 软件注入） */
+        .dynamic-color-link a {
+            font-size: 1.6rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #2563eb, #ec4899, #8b5cf6, #2563eb);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: colorMove 6s ease infinite;
+        }
+        /* 空网站样式（仅保留光标默认，移除灰色） */
+        .empty-link a {
+            cursor: default;
+        }
+        .加固标题 {
+            margin-top: 2rem;
+            padding: 0.5rem 1rem;
+            color: #666;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #eee;
+        }
+        /* 访问提示弹窗样式 */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .popup-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .popup-text {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: #333;
+        }
+        .popup-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .popup-btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        /* 同意按钮样式 */
+        .agree-btn {
+            background: #ccc;
+            color: white;
+            cursor: not-allowed;
+        }
+        .agree-btn.active {
+            background: #2563eb;
+            cursor: pointer;
+        }
+        .agree-btn.active:hover {
+            background: #1d4ed8;
+        }
+        /* 拒绝按钮样式 */
+        .refuse-btn {
+            background: #ef4444;
+            color: white;
+        }
+        .refuse-btn:hover {
+            background: #dc2626;
+        }
+        .countdown {
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+        /* 拒绝提示样式 */
+        .refuse-tip {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.2rem;
+            padding: 1rem 2rem;
+            background: rgba(239, 68, 68, 0.8);
+            border-radius: 8px;
+            z-index: 9998;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <img src="https://q.qlogo.cn/g?b=qq&nk=3215629069&s=640" alt="头像" class="avatar">
-            <h1>小y</h1>
-            <p class="tagline">高级前端开发者 | 技术爱好者</p>
-        </header>
-
-        <section id="about">
-            <h2>关于我</h2>
-            <p>技术问题可以联系我</p>
-        </section>
-
-        <section id="skills">
-            <h2>技能</h2>
-            <div class="skills">
-                <div class="skill">
-                    <h3>HTML/CSS</h3>
-                    <p>熟练掌握现代HTML5和CSS3技术。</p>
-                </div>
-                <div class="skill">
-                    <h3>JavaScript</h3>
-                    <p>精通原生JavaScript和主流框架。</p>
-                </div>
-                <div class="skill">
-                    <h3>UI/UX设计</h3>
-                    <p>注重用户体验和界面设计。</p>
-                </div>
+    <!-- 访问提示弹窗：按钮初始显示3秒倒计时 -->
+    <div class="popup" id="accessPopup">
+        <div class="popup-content">
+            <p class="popup-text">本网站均是搜寻市面上最强大的网址，这些网址不属于本网站所有，只是推广供用户使用。</p>
+            <div class="popup-buttons">
+                <button class="popup-btn agree-btn" id="agreeBtn" disabled>同意 <span class="countdown" id="countdown">3</span> 秒</button>
+                <button class="popup-btn refuse-btn" id="refuseBtn">拒绝</button>
             </div>
-        </section>
-
-        <section id="projects">
-            <h2>安卓逆向</h2>
-            <p>去各种弹窗</p>
-        </section>
-
-        <section id="contact">
-            <h2>联系我</h2>
-            <div class="social-links">
-                <a href="https://qm.qq.com/q/BJonYRvev"><i class="fab fa-github"></i>qq3282438652</a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fas fa-envelope"></i></a>
-            </div>
-        </section>
-
-        <footer>
-            <p>&copy; 2025 小y 保留所有权利.</p>
-        </footer>
+        </div>
     </div>
-    <script src="script.js"></script>
+
+    <!-- 网页主体内容（初始隐藏） -->
+    <div class="page-content" id="pageContent">
+        <div class="container">
+            <h1>实用工具导航</h1>
+            <ul class="link-list">
+                <!-- 小y社区：动态彩色效果 -->
+                <li class="link-item empty-link dynamic-color-link">
+                    <a href="javascript:;">小y社区</a>
+                </li>
+                <!-- 软件注入：动态彩色效果 -->
+                <li class="link-item dynamic-color-link">
+                    <a href="http://epic.t60.top/" target="_blank">软件注入</a>
+                </li>
+                <li class="link-item">
+                    <a href="https://cli.im/#" target="_blank">二维码生成</a>
+                </li>
+                <li class="link-item">
+                    <a href="https://pan.jl8.top/" target="_blank">文件直链</a>
+                </li>
+                <li class="link-item">
+                    <a href="https://www.aconvert.com/cn/audio/mp4-to-mp3/" target="_blank">视频转mp3</a>
+                </li>
+                <li class="link-item">
+                    <a href="http://xg-2.frp.one:52905/" target="_blank">视频解析破解（所有软件通吃）</a>
+                </li>
+                <li class="link-item">
+                    <a href="http://chaipip.com/" target="_blank">IP查询</a>
+                </li>
+                <li class="link-item">
+                    <a href="https://56.al/upload.php" target="_blank">软件脱壳</a>
+                </li>
+
+                <li class="加固标题">加固网站</li>
+                <li class="link-item">
+                    <a href="https://jiagu.360.cn/" target="_blank">360加固</a>
+                </li>
+                <li class="link-item">
+                    <a href="https://console.cloud.tencent.com/ms" target="_blank">腾讯云应用加固</a>
+                </li>
+                <li class="link-item">
+                    <a href="https://yundun.console.aliyun.com/?spm=5176.2020520153.aliyun-console-common.261.58a07474z7cQaH#/ms/list" target="_blank">阿里云应用实时防护</a>
+                </li>
+                <li class="link-item">
+                    <a href="https://www.ijiami.cn/" target="_blank">爱加密（应用加固）</a>
+                </li>
+                <li class="link-item">
+                    <a href="https://www.bangcle.com/" target="_blank">梆梆安全（应用加固）</a>
+                </li>
+                <li class="link-item">
+                    <a href="https://www.nagacloud.com/product/app-protect" target="_blank">娜迦信息-应用加固</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 等待页面所有元素加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const accessPopup = document.getElementById('accessPopup');
+            const agreeBtn = document.getElementById('agreeBtn');
+            const refuseBtn = document.getElementById('refuseBtn');
+            const countdown = document.getElementById('countdown');
+            const pageContent = document.getElementById('pageContent');
+
+            // 倒计时改为3秒，激活同意按钮
+            let count = 3; // 初始值从6改为3
+            const timer = setInterval(function() {
+                count--;
+                countdown.textContent = count;
+                if (count <= 0) {
+                    clearInterval(timer);
+                    agreeBtn.disabled = false;
+                    agreeBtn.classList.add('active');
+                    countdown.textContent = '';
+                    agreeBtn.textContent = '同意';
+                }
+            }, 1000);
+
+            // 同意按钮事件
+            agreeBtn.addEventListener('click', function() {
+                accessPopup.style.display = 'none';
+                pageContent.style.display = 'block';
+            });
+
+            // 拒绝按钮事件
+            refuseBtn.addEventListener('click', function() {
+                accessPopup.style.display = 'none';
+                pageContent.style.display = 'none';
+                const refuseTip = document.createElement('div');
+                refuseTip.className = 'refuse-tip';
+                refuseTip.textContent = '您已拒绝访问，网页已关闭';
+                document.body.appendChild(refuseTip);
+            });
+        });
+    </script>
 </body>
 </html>
