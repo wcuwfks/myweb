@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的状态</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .time {
+            font-size: 36px;
+            margin-top: 50px;
+            color: #333;
+        }
+        .scene {
+            margin-top: 50px;
+            font-size: 24px;
+        }
+        .person {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .person::before {
+            content: '🧍‍♂️'; /* 小人站立 */
+            font-size: 100px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        /* 洗漱动画 */
+        .washing .person::after {
+            content: '👐'; /* 双手 */
+            font-size: 50px;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: wash 1s infinite alternate;
+        }
+        @keyframes wash {
+            0% { top: 50px; }
+            100% { top: 70px; }
+        }
+        /* 吃饭动画 */
+        .eating .person::after {
+            content: '🍽️'; /* 餐具 */
+            font-size: 50px;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: eat 1.5s infinite alternate;
+        }
+        @keyframes eat {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(10deg); }
+        }
+        /* 学习动画 */
+        .studying .person::after {
+            content: '📚'; /* 书 */
+            font-size: 50px;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: study 2s infinite alternate;
+        }
+        @keyframes study {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(1.1); }
+        }
+        /* 课间操动画 */
+        .exercise .person::after {
+            content: '🏃‍♂️'; /* 跑步 */
+            font-size: 50px;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: exercise 1s infinite alternate;
+        }
+        @keyframes exercise {
+            0% { transform: translateX(-50%) translateY(0); }
+            100% { transform: translateX(-50%) translateY(-10px); }
+        }
+        /* 午休/睡觉动画 */
+        .sleeping .person::after {
+            content: '😴'; /* 睡觉 */
+            font-size: 50px;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: sleep 2s infinite alternate;
+        }
+        @keyframes sleep {
+            0% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        .status-text {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+
+    <script>
+        function updateContent() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const second = now.getSeconds();
+            const timeString = now.toLocaleTimeString('zh-CN', { hour12: false });
+
+            let content = '';
+            let status = '';
+            let activityClass = '';
+
+            // 定义时间段和对应的活动
+            const schedule = [
+                { start: '05:00', end: '06:30', activity: '洗漱', class: 'washing', text: '洗漱ing' },
+                { start: '06:31', end: '06:50', activity: '吃饭', class: 'eating', text: '吃饭ing' },
+                { start: '06:51', end: '08:00', activity: '早自习', class: 'studying', text: '早自习ing' },
+                { start: '08:01', end: '08:45', activity: '第一节课', class: 'studying', text: '第一节课ing' },
+                { start: '08:46', end: '08:55', activity: '下课', class: '', text: '下课ing' },
+                { start: '08:56', end: '09:40', activity: '第二节课', class: 'studying', text: '第二节课ing' },
+                { start: '09:41', end: '10:10', activity: '课间操', class: 'exercise', text: '课间操ing' },
+                { start: '10:11', end: '10:55', activity: '第三节课', class: 'studying', text: '第三节课ing' },
+                { start: '10:56', end: '11:05', activity: '下课', class: '', text: '下课ing' },
+                { start: '11:06', end: '11:45', activity: '第四节课', class: 'studying', text: '第四节课ing' },
+                { start: '11:46', end: '12:00', activity: '吃午饭', class: 'eating', text: '吃午饭ing' },
+                { start: '12:01', end: '13:30', activity: '午休', class: 'sleeping', text: '午休ing' },
+                { start: '13:31', end: '13:50', activity: '午自习', class: 'studying', text: '午自习ing' },
+                { start: '13:51', end: '14:35', activity: '第一节课', class: 'studying', text: '第一节课ing' },
+                { start: '14:36', end: '14:45', activity: '下课', class: '', text: '下课ing' },
+                { start: '14:46', end: '15:30', activity: '第二节课', class: 'studying', text: '第二节课ing' },
+                { start: '15:31', end: '16:00', activity: '课间操', class: 'exercise', text: '课间操ing' },
+                { start: '16:01', end: '16:45', activity: '第三节课', class: 'studying', text: '第三节课ing' },
+                { start: '16:46', end: '16:55', activity: '下课', class: '', text: '下课ing' },
+                { start: '16:56', end: '17:10', activity: '吃晚饭', class: 'eating', text: '吃晚饭ing' },
+                { start: '17:11', end: '19:00', activity: '第一节晚自习', class: 'studying', text: '第一节晚自习ing' },
+                { start: '19:01', end: '19:10', activity: '下课', class: '', text: '下课ing' },
+                { start: '19:11', end: '20:15', activity: '第二节晚自习', class: 'studying', text: '第二节晚自习ing' },
+                { start: '20:16', end: '20:25', activity: '下课', class: '', text: '下课ing' },
+                { start: '20:26', end: '20:55', activity: '第三节晚自习', class: 'studying', text: '第三节晚自习ing' },
+                { start: '20:56', end: '22:00', activity: '洗漱', class: 'washing', text: '洗漱ing' },
+                { start: '22:01', end: '04:59', activity: '睡觉', class: 'sleeping', text: '睡觉ing' }
+            ];
+
+            // 获取当前时间的小时和分钟
+            const currentTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+
+            // 查找当前时间段
+            for (const slot of schedule) {
+                if (currentTime >= slot.start && currentTime <= slot.end) {
+                    status = slot.activity;
+                    activityClass = slot.class;
+                    content = `
+                        <div class="time" id="current-time">${timeString}</div>
+                        <div class="scene">
+                            <p>${status}</p>
+                            <div class="person ${activityClass}"></div>
+                            <div class="status-text">${slot.text}</div>
+                        </div>
+                    `;
+                    break;
+                }
+            }
+
+            // 如果没有匹配的时间段（例如跨天的情况）
+            if (!content) {
+                content = `
+                    <div class="time" id="current-time">${timeString}</div>
+                    <div class="scene">
+                        <p>睡觉</p>
+                        <div class="person sleeping"></div>
+                        <div class="status-text">睡觉ing</div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('content').innerHTML = content;
+
+            // 每秒更新时间
+            setInterval(() => {
+                const updatedNow = new Date();
+                document.getElementById('current-time').textContent = updatedNow.toLocaleTimeString('zh-CN', { hour12: false });
+            }, 1000);
+        }
+
+        updateContent();
+        // 每分钟检查一次时间段变化
+        setInterval(updateContent, 60000);
+    </script>
+</body>
+</html>
